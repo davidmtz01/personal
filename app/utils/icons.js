@@ -1,0 +1,11 @@
+export const add = <i className="fa-solid fa-plus"></i>;
+export const home = <i className="fa-solid fa-house"></i>;
+export const list = <i className="fa-solid fa-list-check"></i>;
+export const login = <i className="fa-solid fa-right-from-to-bracket"></i>;
+export const logout = <i className="fa-solid fa-right-from-bracket"></i>;
+export const user = <i className="fa-solid fa-user"></i>
+export const edit = <i className="fa-solid fa-file-pen"></i>
+export const users = <i className="fa-solid fa-user-users"></i>
+export const admin = <i className="fa-solid fa-lock"></i>
+export const plus = <i className="fa-solid fa-plus"></i>
+export const down = <i className="fa-solid fa-caret-down"></i>

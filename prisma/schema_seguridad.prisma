@@ -1,0 +1,54 @@
+// This is your Prisma schema file for the security database,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// This is your Prisma schema file for the security database
+
+datasource seguridad_db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_SEGURIDAD")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma/generated/seguridad" 
+}
+
+model usuario {
+  id_usuario         String   @id @seguridad_db.VarChar(10)
+  nombre_usuario     String   @seguridad_db.VarChar(50)
+  contrasena         String   @seguridad_db.VarChar(255)
+
+  bitacoras          bitacora_seguridad[] @relation("UsuarioBitacoras")
+  roles              rol_seguridad[] @relation("RolUsuarios")
+  
+  seguridad_personal seguridad_personal? @relation("UsuarioSeguridad")
+}
+
+model rol_seguridad {
+  id_rol             String   @id @seguridad_db.VarChar(10)
+  descripcion        String   @seguridad_db.VarChar(100)
+
+  usuarios           usuario[] @relation("RolUsuarios")
+}
+
+model bitacora_seguridad {
+  id_bitacora       String   @id @seguridad_db.VarChar(10)
+  id_usuario        String   @seguridad_db.VarChar(10)
+  accion            String   @seguridad_db.VarChar(255)
+  fecha             DateTime @default(now())
+
+  usuario           usuario @relation("UsuarioBitacoras", fields: [id_usuario], references: [id_usuario])
+}
+
+model seguridad_personal {
+  id_usuario         String   @id @seguridad_db.VarChar(10)
+  usuario            String   @seguridad_db.VarChar(50)
+  contrasena         String   @seguridad_db.VarChar(255)
+  rol                String
+  ultimo_acceso      DateTime @default(now())
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+
+  // Relación con el modelo usuario
+  usuario_rel       usuario @relation("UsuarioSeguridad", fields: [id_usuario], references: [id_usuario])
+}

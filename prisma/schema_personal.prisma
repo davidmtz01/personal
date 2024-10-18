@@ -1,0 +1,112 @@
+// This is your Prisma schema file for the personal database,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// This is your Prisma schema file for the personal database
+
+datasource personal_db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_PERSONAL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma/generated/personal" 
+}
+
+model rol {
+  id_rol             String   @id @personal_db.VarChar(10)
+  descripcion        String   @personal_db.VarChar(100)
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleados          empleado[] @relation("RolEmpleados")
+}
+
+model empleado {
+  id_empleado        String   @id @personal_db.VarChar(10)
+  nombre             String   @personal_db.VarChar(100)
+  direccion          String   @personal_db.VarChar(255)
+  telefono           String   @personal_db.VarChar(15)
+  correo             String   @personal_db.VarChar(100)
+  fecha_ingreso      DateTime
+  id_rol             String?  @personal_db.VarChar(10)
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+
+  rol                rol?     @relation("RolEmpleados", fields: [id_rol], references: [id_rol])
+  asistencias        asistencia[] @relation("EmpleadoAsistencias")
+  evaluaciones       evaluacion[] @relation("EmpleadoEvaluaciones")
+  nominas            nomina[] @relation("EmpleadoNominas")
+  horarios           horario[] @relation("EmpleadoHorarios")
+  bitacoras          bitacora_personal[] @relation("EmpleadoBitacoras")
+  seguridad         seguridad_personal[]
+}
+
+model asistencia {
+  id_asistencia      String   @id @personal_db.VarChar(10)
+  id_empleado        String   @personal_db.VarChar(10)
+  fecha              DateTime
+  hora_entrada       DateTime
+  hora_salida        DateTime
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleado           empleado @relation("EmpleadoAsistencias", fields: [id_empleado], references: [id_empleado])
+}
+
+model seguridad_personal {
+  id_usuario         String   @id @personal_db.VarChar(10)
+  usuario            String   @personal_db.VarChar(50)
+  contrasena         String   @personal_db.VarChar(255)
+  rol                String
+  ultimo_acceso      DateTime @default(now())
+  id_empleado        String   @personal_db.VarChar(10)
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleado           empleado @relation(fields: [id_empleado], references: [id_empleado])
+}
+
+model evaluacion {
+  id_evaluacion      String   @id @personal_db.VarChar(10)
+  id_empleado        String   @personal_db.VarChar(10)
+  fecha              DateTime
+  puntuacion         Int
+  comentarios        String?  @personal_db.VarChar(255)
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleado           empleado @relation("EmpleadoEvaluaciones", fields: [id_empleado], references: [id_empleado])
+}
+
+model nomina {
+  id_nomina          String   @id @personal_db.VarChar(10)
+  id_empleado        String   @personal_db.VarChar(10)
+  periodo            DateTime
+  salario            Decimal   @personal_db.Decimal(10, 2)
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleado           empleado @relation("EmpleadoNominas", fields: [id_empleado], references: [id_empleado])
+}
+
+model horario {
+  id_horario         String   @id @personal_db.VarChar(10)
+  id_empleado        String   @personal_db.VarChar(10)
+  dia                String
+  hora_entrada       DateTime
+  hora_salida        DateTime
+  estatus            String
+  fecha_modificacion DateTime @default(now())
+  
+  empleado           empleado @relation("EmpleadoHorarios", fields: [id_empleado], references: [id_empleado])
+}
+
+model bitacora_personal {
+  id_bitacora       String   @id @personal_db.VarChar(10)
+  id_empleado       String   @personal_db.VarChar(10)
+  accion            String   @personal_db.VarChar(255)
+  fecha             DateTime @default(now())
+  
+  empleado          empleado @relation("EmpleadoBitacoras", fields: [id_empleado], references: [id_empleado])
+}
